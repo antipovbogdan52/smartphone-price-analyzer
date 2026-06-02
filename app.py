@@ -67,6 +67,7 @@ def mean_manual(values):
 
 def quick_sort(values):
     values = list(values)
+
     if manual_len(values) <= 1:
         return values
 
@@ -723,41 +724,63 @@ def predict_new_phone(new_phone, features, feature_means, feature_stds, beta):
 # ===============================================================
 
 def plot_hist_price(model_df):
-    fig, ax = plt.subplots(figsize=(8, 5))
+    fig, ax = plt.subplots(figsize=(5.8, 3.6))
     ax.hist(model_df["price"], bins=30)
-    ax.set_title("Розподіл ринкових цін смартфонів")
-    ax.set_xlabel("Ціна, INR")
-    ax.set_ylabel("Кількість моделей")
-    ax.grid(True)
+    ax.set_title("Розподіл ринкових цін смартфонів", fontsize=10)
+    ax.set_xlabel("Ціна, INR", fontsize=9)
+    ax.set_ylabel("Кількість моделей", fontsize=9)
+    ax.tick_params(axis="both", labelsize=8)
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
     return fig
 
 
 def plot_box_price(model_df):
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(5.8, 3.2))
     ax.boxplot(model_df["price"], vert=False)
-    ax.set_title("Boxplot цін смартфонів після IQR-очищення")
-    ax.set_xlabel("Ціна, INR")
-    ax.grid(True)
+    ax.set_title("Boxplot цін смартфонів після IQR-очищення", fontsize=10)
+    ax.set_xlabel("Ціна, INR", fontsize=9)
+    ax.tick_params(axis="both", labelsize=8)
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
     return fig
 
 
 def plot_scatter(model_df, column, xlabel, title):
-    fig, ax = plt.subplots(figsize=(8, 5))
-    ax.scatter(model_df[column], model_df["price"])
-    ax.set_title(title)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel("Ціна, INR")
-    ax.grid(True)
+    fig, ax = plt.subplots(figsize=(5.8, 3.8))
+    ax.scatter(model_df[column], model_df["price"], s=18, alpha=0.75)
+    ax.set_title(title, fontsize=10)
+    ax.set_xlabel(xlabel, fontsize=9)
+    ax.set_ylabel("Ціна, INR", fontsize=9)
+    ax.tick_params(axis="both", labelsize=8)
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
     return fig
 
 
 def plot_correlation_bar(corr_df):
-    fig, ax = plt.subplots(figsize=(9, 6))
+    fig, ax = plt.subplots(figsize=(6.2, 4.6))
     ax.barh(corr_df["Ознака"], corr_df["Кореляція з ціною"])
-    ax.set_title("Кореляція характеристик смартфона з ринковою ціною")
-    ax.set_xlabel("Коефіцієнт кореляції Пірсона")
-    ax.grid(True)
+    ax.set_title("Кореляція характеристик смартфона з ринковою ціною", fontsize=10)
+    ax.set_xlabel("Коефіцієнт кореляції Пірсона", fontsize=9)
+    ax.tick_params(axis="both", labelsize=8)
+    ax.grid(True, axis="x", alpha=0.3)
     ax.invert_yaxis()
+    fig.tight_layout()
+    return fig
+
+
+def plot_top_correlation_bar(corr_df):
+    top_corr_df = corr_df.head(9)
+
+    fig, ax = plt.subplots(figsize=(6.2, 4.2))
+    ax.barh(top_corr_df["Ознака"], top_corr_df["Кореляція з ціною"])
+    ax.set_title("Найпомітніші кореляції характеристик із ціною", fontsize=10)
+    ax.set_xlabel("Коефіцієнт кореляції Пірсона", fontsize=9)
+    ax.tick_params(axis="both", labelsize=8)
+    ax.grid(True, axis="x", alpha=0.3)
+    ax.invert_yaxis()
+    fig.tight_layout()
     return fig
 
 
@@ -789,42 +812,44 @@ def plot_heatmap(model_df):
 
         heatmap_matrix.append(row)
 
-    fig, ax = plt.subplots(figsize=(9, 7))
+    fig, ax = plt.subplots(figsize=(6.6, 5.2))
     image = ax.imshow(heatmap_matrix, vmin=-1, vmax=1)
 
     fig.colorbar(image, ax=ax, label="Коефіцієнт кореляції")
 
     ax.set_xticks(range(len(heatmap_columns)))
-    ax.set_xticklabels(heatmap_columns, rotation=45, ha="right")
+    ax.set_xticklabels(heatmap_columns, rotation=45, ha="right", fontsize=8)
 
     ax.set_yticks(range(len(heatmap_columns)))
-    ax.set_yticklabels(heatmap_columns)
+    ax.set_yticklabels(heatmap_columns, fontsize=8)
 
-    ax.set_title("Heatmap кореляцій між характеристиками смартфонів")
+    ax.set_title("Heatmap кореляцій між характеристиками смартфонів", fontsize=10)
 
     for i in range(len(heatmap_columns)):
         for j in range(len(heatmap_columns)):
-            ax.text(j, i, f"{heatmap_matrix[i][j]:.2f}", ha="center", va="center", fontsize=8)
+            ax.text(j, i, f"{heatmap_matrix[i][j]:.2f}", ha="center", va="center", fontsize=7)
 
     fig.tight_layout()
     return fig
 
 
 def plot_actual_vs_predicted(y_test, y_pred):
-    fig, ax = plt.subplots(figsize=(8, 5))
+    fig, ax = plt.subplots(figsize=(5.8, 3.8))
 
-    ax.scatter(y_test, y_pred)
+    ax.scatter(y_test, y_pred, s=18, alpha=0.75)
 
     min_value = min(min(y_test), min(y_pred))
     max_value = max(max(y_test), max(y_pred))
 
     ax.plot([min_value, max_value], [min_value, max_value])
 
-    ax.set_title("Фактична ціна vs прогнозована ціна")
-    ax.set_xlabel("Фактична ціна, INR")
-    ax.set_ylabel("Прогнозована ціна, INR")
-    ax.grid(True)
+    ax.set_title("Фактична ціна vs прогнозована ціна", fontsize=10)
+    ax.set_xlabel("Фактична ціна, INR", fontsize=9)
+    ax.set_ylabel("Прогнозована ціна, INR", fontsize=9)
+    ax.tick_params(axis="both", labelsize=8)
+    ax.grid(True, alpha=0.3)
 
+    fig.tight_layout()
     return fig
 
 
@@ -832,39 +857,87 @@ def plot_actual_vs_predicted(y_test, y_pred):
 # 7. ІНТЕРФЕЙС STREAMLIT
 # ===============================================================
 
-st.title("📱 Аналіз впливу характеристик смартфонів на їхню ринкову ціну")
+st.markdown(
+    """
+    <style>
+    .main-title {
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 0px;
+    }
+    .subtitle {
+        font-size: 17px;
+        color: #555;
+        margin-top: 0px;
+        margin-bottom: 20px;
+    }
+    .small-note {
+        font-size: 14px;
+        color: #555;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+with st.sidebar:
+    st.header("📱 Меню застосунку")
+    st.write("**Курсова робота**")
+    st.write("Аналіз впливу характеристик смартфонів на їхню ринкову ціну")
+    st.markdown("---")
+    st.write("**Етапи роботи програми:**")
+    st.write("1. Завантаження CSV")
+    st.write("2. Перевірка структури")
+    st.write("3. Формування числових ознак")
+    st.write("4. Очищення даних")
+    st.write("5. Статистика та графіки")
+    st.write("6. Кореляційний аналіз")
+    st.write("7. МНК-регресія")
+    st.write("8. Прогноз ціни")
+    st.markdown("---")
+    st.info("Streamlit-вебзастосунок із графічним інтерфейсом користувача")
+
+st.markdown('<div class="main-title">📱 Аналітична система прогнозування ціни смартфонів</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="subtitle">Завантаження CSV → очищення → статистичний аналіз → кореляції → регресійна модель → прогноз ціни</div>',
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
     Цей програмний застосунок створено для курсової роботи з аналітики даних.
-    Він дозволяє завантажити CSV-файл з характеристиками смартфонів,
-    очистити дані, виконати статистичний аналіз, побудувати графіки,
-    визначити кореляції та спрогнозувати ринкову ціну смартфона.
+    Він дозволяє завантажити CSV-файл з характеристиками смартфонів, очистити дані,
+    виконати статистичний аналіз, побудувати графіки, визначити кореляції та
+    спрогнозувати ринкову ціну нового смартфона.
     """
 )
 
-with st.expander("ℹ️ Інформація про роботу", expanded=True):
+with st.expander("ℹ️ Інформація про курсову роботу", expanded=False):
     st.write("**Тема:** Аналіз впливу характеристик смартфонів на їхню ринкову ціну")
     st.write("**Мета:** дослідити вплив характеристик смартфонів на їхню ринкову ціну та побудувати модель прогнозування вартості.")
-    st.write("**Об'єкт дослідження:** ринок смартфонів, представлений набором даних з характеристиками та цінами пристроїв.")
-    st.write("**Предмет дослідження:** залежність ринкової ціни смартфонів від технічних і функціональних характеристик.")
+    st.write("**Об'єкт дослідження:** процес аналізу та прогнозування ринкової ціни смартфонів на основі їхніх технічних і функціональних характеристик.")
+    st.write("**Предмет дослідження:** методи, моделі та програмні засоби обробки даних, кореляційного аналізу, регресійного моделювання і прогнозування ринкової ціни смартфонів.")
     st.write("**Методи:** описова статистика, IQR, EDA, кореляція Пірсона, множинна лінійна регресія, МНК, MAE, RMSE, R².")
-    st.write("**Особливість реалізації:** основні методи реалізовано власноруч без використання sklearn.")
+    st.write("**Особливість реалізації:** ключові обчислювальні етапи винесено в окремі функції програми.")
 
+st.markdown("### Панель керування аналізом")
+st.write(
+    "Для початку роботи потрібно завантажити CSV-файл SmartPhones Dataset. "
+    "Після завантаження програма автоматично виконає перевірку структури, "
+    "сформує числові ознаки, очистить дані та підготує їх до аналізу."
+)
 
-uploaded_file = st.file_uploader("Завантажте CSV-файл SmartPhones Dataset", type=["csv"])
+uploaded_file = st.file_uploader("📂 Завантажте CSV-файл SmartPhones Dataset", type=["csv"])
 
 if uploaded_file is None:
     st.warning("Завантажте CSV-файл, щоб почати аналіз.")
     st.stop()
-
 
 try:
     raw_df = pd.read_csv(uploaded_file)
 except Exception as error:
     st.error(f"Не вдалося прочитати CSV-файл: {error}")
     st.stop()
-
 
 st.success("CSV-файл успішно завантажено.")
 
@@ -878,19 +951,29 @@ with col1:
 with col2:
     st.metric("Кількість стовпців", raw_df.shape[1])
 
+st.write("Перші 5 рядків початкового набору даних:")
 st.dataframe(raw_df.head(), use_container_width=True)
+
+with st.expander("Показати весь початковий набір даних"):
+    st.dataframe(raw_df, use_container_width=True, height=450)
 
 required_columns = [
     "model", "price", "rating", "sim", "processor",
     "ram", "battery", "display", "camera", "card", "os"
 ]
 
+missing_required_columns = [column for column in required_columns if column not in raw_df.columns]
+
+if len(missing_required_columns) > 0:
+    st.error("У файлі відсутні потрібні колонки: " + str(missing_required_columns))
+    st.stop()
+
 missing_report = raw_df[required_columns].isna().sum().reset_index()
 missing_report.columns = ["Стовпець", "Кількість пропусків"]
 
-st.subheader("2. Перевірка пропущених значень")
+st.subheader("2. Перевірка пропущених значень у початкових стовпцях")
 st.dataframe(missing_report, use_container_width=True)
-
+st.caption("Ця таблиця показує пропуски саме в сирих стовпцях початкового CSV-файлу.")
 
 try:
     clean_df, model_df, info = process_dataset(raw_df)
@@ -898,8 +981,17 @@ except Exception as error:
     st.error(f"Помилка під час обробки даних: {error}")
     st.stop()
 
-
 features = info["features"]
+
+parsed_missing_report = clean_df[["price"] + features].isna().sum().reset_index()
+parsed_missing_report.columns = ["Ознака", "Кількість пропусків"]
+
+st.subheader("2.1 Пропуски після формування числових ознак")
+st.dataframe(parsed_missing_report, use_container_width=True)
+st.caption(
+    "Ця таблиця показує пропуски вже після парсингу текстових характеристик у числові ознаки. "
+    "Саме ці пропуски пояснюють, чому після видалення неповних рядків кількість записів зменшується."
+)
 
 st.subheader("3. Обробка та очищення даних")
 
@@ -909,20 +1001,30 @@ with col1:
     st.metric("Початково записів", raw_df.shape[0])
 
 with col2:
-    st.metric("Після видалення пропусків", info["after_dropna"])
+    st.metric("Після видалення пропусків", info["after_dropna"], delta=f"−{info['removed_missing']}")
 
 with col3:
-    st.metric("Після IQR-очищення", info["after_iqr"])
+    st.metric("Після IQR-очищення", info["after_iqr"], delta=f"−{info['removed_outliers']}")
 
-st.write(f"Вилучено через пропуски: **{info['removed_missing']}**")
-st.write(f"Вилучено цінових викидів: **{info['removed_outliers']}**")
-st.write(f"Нижня межа IQR для ціни: **{round(info['lower_price'], 2)}**")
-st.write(f"Верхня межа IQR для ціни: **{round(info['upper_price'], 2)}**")
+col4, col5 = st.columns(2)
+
+with col4:
+    st.info(f"Вилучено через пропуски: **{info['removed_missing']}** записів")
+    st.info(f"Вилучено цінових викидів: **{info['removed_outliers']}** записів")
+
+with col5:
+    st.write(f"Нижня межа IQR для ціни: **{round(info['lower_price'], 2)} INR**")
+    st.write(f"Верхня межа IQR для ціни: **{round(info['upper_price'], 2)} INR**")
+    st.write("Фінальна вибірка використовується для статистики, кореляційного аналізу, моделі та прогнозу.")
 
 st.subheader("4. Сформовані числові ознаки")
-st.dataframe(clean_df.head(), use_container_width=True)
+st.write("Перші 10 рядків таблиці після перетворення текстових характеристик у числові ознаки:")
+st.dataframe(clean_df.head(10), use_container_width=True)
 
-clean_csv = clean_df.to_csv(index=False).encode("utf-8")
+with st.expander("Показати всю таблицю сформованих числових ознак"):
+    st.dataframe(clean_df, use_container_width=True, height=450)
+
+clean_csv = clean_df.to_csv(index=False).encode("utf-8-sig")
 
 st.download_button(
     label="⬇️ Завантажити очищений CSV",
@@ -931,14 +1033,15 @@ st.download_button(
     mime="text/csv"
 )
 
+st.markdown("---")
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     [
-        "Описова статистика",
-        "Графіки",
-        "Кореляції",
-        "Модель",
-        "Прогноз"
+        "📊 Описова статистика",
+        "📈 Графіки",
+        "🔗 Кореляції",
+        "🧮 Модель",
+        "📱 Прогноз"
     ]
 )
 
@@ -955,22 +1058,50 @@ with tab1:
     st.info(
         f"Середня ціна смартфона становить {round(mean_price, 2)} INR, "
         f"а медіанна ціна — {round(median_price, 2)} INR. "
-        f"Якщо середнє більше за медіану, це свідчить про правий хвіст розподілу цін."
+        f"Оскільки середнє більше за медіану, розподіл цін має правий хвіст."
     )
 
 
 with tab2:
     st.subheader("Графічний розвідувальний аналіз")
 
-    st.pyplot(plot_hist_price(model_df))
-    st.write("Більшість смартфонів зосереджена у бюджетному та середньому цінових сегментах.")
+    col1, col2 = st.columns(2)
 
-    st.pyplot(plot_box_price(model_df))
-    st.write("Boxplot показує, що після IQR-очищення найсильніші цінові викиди було вилучено.")
+    with col1:
+        st.pyplot(plot_hist_price(model_df), use_container_width=False)
+        st.write("Більшість смартфонів зосереджена у бюджетному та середньому цінових сегментах.")
 
-    st.pyplot(plot_scatter(model_df, "ram_gb", "RAM, GB", "Залежність ціни від оперативної пам'яті"))
-    st.pyplot(plot_scatter(model_df, "storage_gb", "Storage, GB", "Залежність ціни від внутрішньої пам'яті"))
-    st.pyplot(plot_scatter(model_df, "fast_charging_w", "Fast charging, W", "Залежність ціни від швидкої зарядки"))
+    with col2:
+        st.pyplot(plot_box_price(model_df), use_container_width=False)
+        st.write("Boxplot показує, що після IQR-очищення найсильніші цінові викиди було вилучено.")
+
+    col3, col4 = st.columns(2)
+
+    with col3:
+        st.pyplot(
+            plot_scatter(model_df, "ram_gb", "RAM, GB", "Залежність ціни від оперативної пам'яті"),
+            use_container_width=False
+        )
+
+    with col4:
+        st.pyplot(
+            plot_scatter(model_df, "storage_gb", "Storage, GB", "Залежність ціни від внутрішньої пам'яті"),
+            use_container_width=False
+        )
+
+    col5, col6 = st.columns(2)
+
+    with col5:
+        st.pyplot(
+            plot_scatter(model_df, "fast_charging_w", "Fast charging, W", "Залежність ціни від швидкої зарядки"),
+            use_container_width=False
+        )
+
+    with col6:
+        st.info(
+            "Графічний аналіз показує, що ціна смартфона має помітний зв'язок з окремими характеристиками, "
+            "але цей зв'язок не є одновимірним. Саме тому для прогнозування використовується множинна лінійна регресія."
+        )
 
 
 with tab3:
@@ -983,18 +1114,33 @@ with tab3:
         use_container_width=True
     )
 
-    st.pyplot(plot_correlation_bar(corr_df))
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Найпомітніші кореляції характеристик із ціною")
+        st.pyplot(plot_top_correlation_bar(corr_df), use_container_width=False)
+
+    with col2:
+        st.subheader("Повна діаграма кореляцій")
+        st.pyplot(plot_correlation_bar(corr_df), use_container_width=False)
 
     st.subheader("Heatmap кореляцій")
-    st.pyplot(plot_heatmap(model_df))
 
-    top_features = corr_df.head(8)
+    col3, col4 = st.columns([1, 1])
 
-    st.info(
-        "Найсильніше з ціною пов'язані такі характеристики: "
-        + ", ".join(top_features["Ознака"].tolist())
-        + "."
-    )
+    with col3:
+        st.pyplot(plot_heatmap(model_df), use_container_width=False)
+
+    with col4:
+        top_features = corr_df.head(8)
+        st.info(
+            "Найсильніше з ціною пов'язані такі характеристики: "
+            + ", ".join(top_features["Ознака"].tolist())
+            + "."
+        )
+        st.write(
+            "Heatmap показує не лише зв'язок характеристик із ціною, а й взаємозв'язки між самими ознаками."
+        )
 
 
 with tab4:
@@ -1022,14 +1168,21 @@ with tab4:
         f"тобто модель пояснює приблизно **{round(model_info['r2'] * 100, 1)}%** варіації ціни смартфонів."
     )
 
-    st.subheader("Коефіцієнти моделі")
-    st.dataframe(
-        model_info["coef_df"][["Ознака", "Стандартизований коефіцієнт"]],
-        use_container_width=True
-    )
+    col1, col2 = st.columns([1, 1])
 
-    st.subheader("Фактична ціна vs прогнозована ціна")
-    st.pyplot(plot_actual_vs_predicted(model_info["y_test"], model_info["y_pred"]))
+    with col1:
+        st.subheader("Коефіцієнти моделі")
+        st.dataframe(
+            model_info["coef_df"][["Ознака", "Стандартизований коефіцієнт"]],
+            use_container_width=True
+        )
+
+    with col2:
+        st.subheader("Фактична ціна vs прогнозована ціна")
+        st.pyplot(
+            plot_actual_vs_predicted(model_info["y_test"], model_info["y_pred"]),
+            use_container_width=False
+        )
 
     st.info(
         "Модель відображає загальну тенденцію ціноутворення, але не може повністю врахувати "
@@ -1041,6 +1194,11 @@ with tab5:
     st.subheader("Прогнозування ціни нового смартфона")
 
     model_info = train_model(model_df, features)
+
+    st.write(
+        "Введіть характеристики нового смартфона. Програма стандартизує ці значення так само, "
+        "як навчальні дані, і розрахує орієнтовну ринкову ціну за побудованою МНК-моделлю."
+    )
 
     col1, col2, col3 = st.columns(3)
 
@@ -1083,7 +1241,7 @@ with tab5:
         "supports_card": supports_card
     }
 
-    if st.button("Спрогнозувати ціну"):
+    if st.button("🔮 Спрогнозувати ціну"):
         predicted_price = predict_new_phone(
             new_phone,
             features,
